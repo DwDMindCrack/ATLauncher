@@ -63,9 +63,11 @@ import com.atlauncher.exceptions.InvalidPack;
 import com.atlauncher.gui.BottomBar;
 import com.atlauncher.gui.InstancesPanel;
 import com.atlauncher.gui.LauncherConsole;
+import com.atlauncher.gui.LoginPanel;
 import com.atlauncher.gui.NewsPanel;
 import com.atlauncher.gui.PacksPanel;
 import com.atlauncher.utils.Utils;
+import javax.swing.JPanel;
 
 /**
  * Settings class for storing all data for the Launcher and the settings of the user
@@ -117,6 +119,7 @@ public class Settings {
     private NewsPanel newsPanel; // The news panel
     private PacksPanel packsPanel; // The packs panel
     private BottomBar bottomBar; // The bottom bar
+    private LoginPanel loginPane;
     private boolean firstTimeRun = false; // If this is the first time the Launcher has been run
     private boolean offlineMode = false; // If offline mode is enabled
     private boolean usingMacApp = false; // If the user is using the Mac App
@@ -125,7 +128,8 @@ public class Settings {
     private boolean minecraftLaunched = false; // If Minecraft has been Launched
     private String fileHashes = null; // Hashes for the files to get from the server
     private String version = "%VERSION%"; // Version of the Launcher
-    private String userAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36";
+    private String userAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.3) Gecko/20100401";
+    //private String userAgent = "Mozilla/5.0 (Windows NT 6.2; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/28.0.1500.72 Safari/537.36";
     @SuppressWarnings("unused")
     private boolean minecraftLoginServerUp = false; // If the Minecraft Login server is up
     @SuppressWarnings("unused")
@@ -168,7 +172,7 @@ public class Settings {
         tempDir = new File(baseDir, "Temp");
         instancesDataFile = new File(configsDir, "instancesdata");
         userDataFile = new File(configsDir, "userdata");
-        propertiesFile = new File(configsDir, "ATLauncher.conf");
+        propertiesFile = new File(configsDir, "DwDLauncher.conf");
     }
 
     public void loadEverything() {
@@ -305,6 +309,7 @@ public class Settings {
                 if (node.getNodeType() == Node.ELEMENT_NODE) {
                     Element element = (Element) node;
                     String name = element.getAttribute("name");
+                    String download = element.getAttribute("download");
                     String type = element.getAttribute("type");
                     String md5 = element.getAttribute("md5");
                     File file = null;
@@ -340,7 +345,7 @@ public class Settings {
                     } else {
                         continue; // Don't know what to do with this file so ignore it
                     }
-                    downloads.add(new Downloadable("launcher/" + name, file, md5, null, true));
+                    downloads.add(new Downloadable("launcher/" + download, file, md5, null, true));
                 }
             }
         } catch (SAXException e) {
@@ -633,7 +638,7 @@ public class Settings {
     public void loadServerProperty() {
         try {
             this.properties.load(new FileInputStream(propertiesFile));
-            String serv = properties.getProperty("server", "Auto");
+            String serv = properties.getProperty("server", "US1");
             if (isPackTester()) {
                 this.server = getServerByName("Master"); // If tester use Master Server
                 if (isServerByName(serv)) {
@@ -790,7 +795,7 @@ public class Settings {
                     "sortpacksalphabetically", "false"));
 
             this.enableConsole = Boolean.parseBoolean(properties.getProperty("enableconsole",
-                    "true"));
+                    "false"));
 
             this.enableDebugConsole = Boolean.parseBoolean(properties.getProperty(
                     "enabledebugconsole", "false"));
@@ -926,6 +931,8 @@ public class Settings {
      */
     private void setupServers() {
         // INSERT SERVERS HERE
+        servers.add(new Server("US1", "us1.dwdg.net"));
+        
     }
 
     public boolean disableServerGetNext() {
@@ -1501,7 +1508,7 @@ public class Settings {
             data += "&" + URLEncoder.encode("extra3", "UTF-8") + "="
                     + URLEncoder.encode(extra3, "UTF-8");
 
-            URL url = new URL("%APIURL%");
+            URL url = new URL("http://api.dwdg.net/launcherApi.php");
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
@@ -1713,7 +1720,7 @@ public class Settings {
      */
     public void reloadInstancesPanel() {
         if (instancesPanel != null) {
-            this.instancesPanel.reload(); // Reload the instances panel
+            this.loginPane.reload(); // Reload the instances panel
         }
     }
 
@@ -1765,7 +1772,11 @@ public class Settings {
      * Reloads the bottom bar accounts combobox
      */
     public void reloadAccounts() {
-        this.bottomBar.reloadAccounts(); // Reload the Bottom Bar accounts combobox
+        this.loginPane.reload(); // Reload the Bottom Bar accounts combobox
+    }
+    
+    public void setLoginPane(LoginPanel loginPane) {
+        this.loginPane = loginPane;
     }
 
     /**

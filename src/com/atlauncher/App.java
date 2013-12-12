@@ -69,7 +69,7 @@ public class App {
 
         settings = new Settings(); // Setup the Settings and wait for it to finish
 
-        settings.log("ATLauncher Version: " + settings.getVersion());
+        settings.log("DwD Launcher Version: " + settings.getVersion());
         settings.log("Operating System: " + System.getProperty("os.name"));
         settings.log("Java Version: " + Utils.getJavaVersion(), LogMessageType.info, false);
         if (settings.isUsingCustomJavaPath()) {

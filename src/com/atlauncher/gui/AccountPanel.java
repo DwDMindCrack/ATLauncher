@@ -39,6 +39,7 @@ import com.atlauncher.App;
 import com.atlauncher.data.Account;
 import com.atlauncher.data.LogMessageType;
 import com.atlauncher.utils.Authentication;
+import java.awt.Dimension;
 
 public class AccountPanel extends JPanel {
 
@@ -66,8 +67,19 @@ public class AccountPanel extends JPanel {
     private final Insets LABEL_INSETS = new Insets(3, 0, 3, 10);
     private final Insets FIELD_INSETS = new Insets(3, 0, 3, 0);
 
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(600, 400);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(600, 400);
+    }
+
     public AccountPanel() {
         setLayout(new BorderLayout());
+        setOpaque(false);
 
         rightPanel = new JPanel();
         rightPanel.setLayout(new BorderLayout());

@@ -2,3 +2,6 @@
 *~
 release/
 bin/
+/nbproject/private/
+/build/
+/dist/

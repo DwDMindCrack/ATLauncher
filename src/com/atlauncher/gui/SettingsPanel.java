@@ -31,6 +31,7 @@ import com.atlauncher.App;
 import com.atlauncher.data.Language;
 import com.atlauncher.data.Server;
 import com.atlauncher.utils.Utils;
+import java.awt.Color;
 
 @SuppressWarnings("serial")
 public class SettingsPanel extends JPanel {
@@ -92,10 +93,22 @@ public class SettingsPanel extends JPanel {
     private final Insets LABEL_INSETS_SMALL = new Insets(0, 0, 0, 10);
     private final Insets FIELD_INSETS_SMALL = new Insets(0, 0, 0, 0);
 
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(600, 450);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(600, 450);
+    }
+
     public SettingsPanel() {
         setLayout(new BorderLayout());
         topPanel = new JPanel();
         topPanel.setLayout(new GridBagLayout());
+        setBackground(new Color(226, 226, 0));
+        topPanel.setOpaque(false);
         GridBagConstraints gbc = new GridBagConstraints();
 
         helpIcon = Utils.getIconImage("/resources/Help.png");
@@ -106,6 +119,7 @@ public class SettingsPanel extends JPanel {
         gbc.insets = LABEL_INSETS;
         gbc.anchor = GridBagConstraints.BASELINE_TRAILING;
         languageLabel = new JLabel(App.settings.getLocalizedString("settings.language") + ":");
+        languageLabel.setOpaque(false);
         languageLabel.setIcon(helpIcon);
         languageLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -130,6 +144,7 @@ public class SettingsPanel extends JPanel {
             language.addItem(languagee);
         }
         language.setSelectedItem(App.settings.getLanguage());
+        language.setOpaque(false);
         topPanel.add(language, gbc);
 
         // Forge Logging Level
@@ -194,6 +209,7 @@ public class SettingsPanel extends JPanel {
                 }
             }
         });
+        downloadServerLabel.setOpaque(false);
         topPanel.add(downloadServerLabel, gbc);
 
         gbc.gridx++;
@@ -204,6 +220,7 @@ public class SettingsPanel extends JPanel {
             server.addItem(serverr);
         }
         server.setSelectedItem(App.settings.getOriginalServer());
+        server.setOpaque(false);
         topPanel.add(server, gbc);
 
         // Memory Settings
@@ -237,6 +254,7 @@ public class SettingsPanel extends JPanel {
                 }
             }
         });
+        memoryLabel.setOpaque(false);
         topPanel.add(memoryLabel, gbc);
 
         gbc.gridx++;
@@ -248,6 +266,7 @@ public class SettingsPanel extends JPanel {
             memory.addItem(memoryOptions[i]);
         }
         memory.setSelectedItem(App.settings.getMemory() + " MB");
+        memory.setOpaque(false);
         topPanel.add(memory, gbc);
 
         // Perm Gen Settings
@@ -270,6 +289,7 @@ public class SettingsPanel extends JPanel {
                 }
             }
         });
+        permGenLabel.setOpaque(false);
         topPanel.add(permGenLabel, gbc);
 
         gbc.gridx++;
@@ -277,6 +297,7 @@ public class SettingsPanel extends JPanel {
         gbc.anchor = GridBagConstraints.BASELINE_LEADING;
         permGen = new JTextField(4);
         permGen.setText(App.settings.getPermGen() + "");
+        permGen.setOpaque(false);
         topPanel.add(permGen, gbc);
 
         // Window Size
@@ -300,6 +321,7 @@ public class SettingsPanel extends JPanel {
                 }
             }
         });
+        windowSizeLabel.setOpaque(false);
         topPanel.add(windowSizeLabel, gbc);
 
         gbc.gridx++;
@@ -341,6 +363,7 @@ public class SettingsPanel extends JPanel {
         windowSizePanel.add(new JLabel("x"));
         windowSizePanel.add(heightField);
         windowSizePanel.add(commonScreenSizes);
+        windowSizePanel.setOpaque(false);
         topPanel.add(windowSizePanel, gbc);
         windowSizeLabel.setPreferredSize(new Dimension(windowSizeLabel.getPreferredSize().width,
                 windowSizePanel.getPreferredSize().height));

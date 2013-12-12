@@ -587,7 +587,7 @@ public class Instance implements Serializable {
         Thread thread = new Thread() {
             public void run() {
                 String result = Utils.uploadPaste("ATLauncher Log", App.settings.getLog());
-                if (result.contains("%PASTECHECKURL%")) {
+                if (result.contains("http://paste.dwdg.net")) {
                     App.settings.apiCall(App.settings.getAccount().getMinecraftUsername(),
                             "reportcrash", realPack.getID() + "", getVersion(),
                             result.replace("http://paste.atlauncher.com/view/", ""));
@@ -599,5 +599,9 @@ public class Instance implements Serializable {
             };
         };
         thread.run();
+    }
+    
+    public String toString() {
+        return this.name;
     }
 }

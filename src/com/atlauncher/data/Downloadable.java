@@ -1,8 +1,9 @@
 /**
  * Copyright 2013 by ATLauncher and Contributors
  *
- * This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/.
+ * This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+ * Unported License. To view a copy of this license, visit
+ * http://creativecommons.org/licenses/by-sa/3.0/.
  */
 package com.atlauncher.data;
 
@@ -162,7 +163,7 @@ public class Downloadable {
                             return getConnection();
                         } else {
                             App.settings.log("Failed to download " + this.beforeURL
-                                    + " from all ATLauncher servers. Cancelling install!",
+                                    + " from all DwD servers. Cancelling install!",
                                     LogMessageType.error, false);
                             if (this.instanceInstaller != null) {
                                 instanceInstaller.cancel(true);
@@ -176,12 +177,16 @@ public class Downloadable {
         return this.connection;
     }
 
+    
+
+    
+
     private void downloadFile(boolean downloadAsLibrary) {
-        if (instanceInstaller != null) {
-            if (instanceInstaller.isCancelled()) {
-                return;
-            }
+        if ((this.instanceInstaller != null)
+                && (this.instanceInstaller.isCancelled())) {
+            return;
         }
+
         InputStream in = null;
         FileOutputStream writer = null;
         try {
@@ -191,17 +196,15 @@ public class Downloadable {
                 in = getConnection().getInputStream();
             }
             writer = new FileOutputStream(this.file);
-            byte[] buffer = new byte[2048];
+            byte[] buffer = new byte[1024];
             int bytesRead = 0;
-            while ((bytesRead = in.read(buffer)) > 0) {
+            while ((bytesRead = in.read(buffer,0,1024)) > 0) {
                 writer.write(buffer, 0, bytesRead);
-                buffer = new byte[2048];
-                if (this.instanceInstaller != null && downloadAsLibrary && getFilesize() != 0) {
+                if ((this.instanceInstaller != null) && (downloadAsLibrary) && (getFilesize() != 0)) {
                     this.instanceInstaller.addDownloadedBytes(bytesRead);
                 }
             }
         } catch (SocketException e) {
-            // Connection reset. Close connection and try again
             App.settings.logStackTrace(e);
             this.connection.disconnect();
             this.connection = null;
@@ -222,11 +225,11 @@ public class Downloadable {
     }
 
     public String getContents() {
-        if (instanceInstaller != null) {
-            if (instanceInstaller.isCancelled()) {
-                return null;
-            }
+        if ((this.instanceInstaller != null)
+                && (this.instanceInstaller.isCancelled())) {
+            return null;
         }
+
         StringBuilder response = null;
         try {
             InputStream in = null;
@@ -238,7 +241,6 @@ public class Downloadable {
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             response = new StringBuilder();
             String inputLine;
-
             while ((inputLine = br.readLine()) != null) {
                 response.append(inputLine);
             }
@@ -277,7 +279,7 @@ public class Downloadable {
                 this.file.getAbsolutePath().lastIndexOf(File.separatorChar))).mkdirs();
         if (getMD5().equalsIgnoreCase("-")) {
             downloadFile(downloadAsLibrary); // Only download the file once since we have no MD5 to
-                                             // check
+            // check
         } else {
             String fileMD5;
             boolean done = false;
@@ -308,7 +310,7 @@ public class Downloadable {
                         download(downloadAsLibrary); // Redownload the file
                     } else {
                         App.settings.log("Failed to download file " + this.file.getName()
-                                + " from all ATLauncher servers. Cancelling install!",
+                                + " from all DwD servers. Cancelling install!",
                                 LogMessageType.error, false);
                         if (this.instanceInstaller != null) {
                             instanceInstaller.cancel(true);

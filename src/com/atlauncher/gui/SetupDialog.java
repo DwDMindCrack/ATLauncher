@@ -43,7 +43,7 @@ public class SetupDialog extends JDialog {
     private Settings settings;
 
     public SetupDialog(Settings set) {
-        super(null, "ATLauncher Setup", ModalityType.APPLICATION_MODAL);
+        super(null, "DwD Launcher Setup", ModalityType.APPLICATION_MODAL);
         this.requestFocus();
         this.settings = set;
         setSize(400, 200);
@@ -55,7 +55,7 @@ public class SetupDialog extends JDialog {
 
         // Top Panel Stuff
         top = new JPanel();
-        top.add(new JLabel("Setting up ATLauncher"));
+        top.add(new JLabel("Setting up DwD Launcher"));
 
         // Middle Panel Stuff
         middle = new JPanel();

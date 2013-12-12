@@ -63,7 +63,7 @@ public class LauncherConsole extends JFrame {
 
     public LauncherConsole() {
         setSize(WINDOW_SIZE);
-        setTitle("ATLauncher Console %VERSION%");
+        setTitle("DwD Launcher Console %VERSION%");
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         setIconImage(Utils.getImage("/resources/Icon.png"));
         setMinimumSize(MINIMUM_SIZE);

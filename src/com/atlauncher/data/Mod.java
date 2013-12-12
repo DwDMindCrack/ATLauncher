@@ -578,7 +578,7 @@ public class Mod {
             case jar:
             case forge:
                 if (installer.isServer() && thisType == Type.forge) {
-                    Utils.copyFile(fileLocation, installer.getRootDirectory());
+                    Utils.unzip(fileLocation, installer.getJarModsDirectory());                    
                     break;
                 } else if (installer.isServer() && thisType == Type.jar) {
                     Utils.unzip(fileLocation, installer.getTempJarDirectory());

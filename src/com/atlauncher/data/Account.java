@@ -107,6 +107,7 @@ public class Account implements Serializable {
     public ImageIcon getMinecraftSkin() {
         File file = null;
         if (isReal()) {
+            
             file = new File(App.settings.getSkinsDir(), minecraftUsername + ".png");
             if (!file.exists()) {
                 updateSkin();

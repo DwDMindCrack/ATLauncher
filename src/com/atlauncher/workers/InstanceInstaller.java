@@ -1,8 +1,9 @@
 /**
  * Copyright 2013 by ATLauncher and Contributors
  *
- * This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/.
+ * This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+ * Unported License. To view a copy of this license, visit
+ * http://creativecommons.org/licenses/by-sa/3.0/.
  */
 package com.atlauncher.workers;
 
@@ -53,7 +54,7 @@ import com.atlauncher.data.Pack;
 import com.atlauncher.data.Type;
 import com.atlauncher.gui.ModsChooser;
 import com.atlauncher.utils.Utils;
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+import org.apache.commons.codec.binary.Base64;
 
 public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
@@ -306,7 +307,8 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
     public ArrayList<Mod> getModsDependancies(Mod mod) {
         ArrayList<Mod> dependsMods = new ArrayList<Mod>();
         for (String name : mod.getDependancies()) {
-            inner: {
+            inner:
+            {
                 for (Mod modd : allMods) {
                     if (modd.getName().equalsIgnoreCase(name)) {
                         dependsMods.add(modd);
@@ -360,12 +362,12 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
         }
         File[] directories;
         if (isServer) {
-            directories = new File[] { getRootDirectory(), getModsDirectory(), getTempDirectory(),
-                    getLibrariesDirectory() };
+            directories = new File[]{getRootDirectory(), getModsDirectory(), getTempDirectory(),
+                getLibrariesDirectory()};
         } else {
-            directories = new File[] { getRootDirectory(), getModsDirectory(),
-                    getDisabledModsDirectory(), getTempDirectory(), getJarModsDirectory(),
-                    getBinDirectory(), getNativesDirectory() };
+            directories = new File[]{getRootDirectory(), getModsDirectory(),
+                getDisabledModsDirectory(), getTempDirectory(), getJarModsDirectory(),
+                getBinDirectory(), getNativesDirectory()};
         }
         for (File directory : directories) {
             directory.mkdir();
@@ -389,48 +391,54 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
         HashMap<String, Integer> fileSizes = null;
 
         if (!files.isEmpty()) {
-            String base64Files = Base64.encode(files.getBytes());
-            fileSizes = new HashMap<String, Integer>();
-            String returnValue = null;
-            do {
-                try {
-                    returnValue = Utils.sendPostData(App.settings.getFileURL("getfilesizes.php"),
-                            base64Files, "files");
-                } catch (IOException e1) {
-                    App.settings.logStackTrace(e1);
-                }
-                if (returnValue == null) {
-                    if (!App.settings.getNextServer()) {
-                        App.settings
-                                .log("Couldn't get filesizes of files from all ATLauncher servers. Continuing regardless!",
-                                        LogMessageType.warning, false);
+            try {
+                String base64Files = Base64.encodeBase64String(files.getBytes("CP1252"));
+
+                fileSizes = new HashMap<>();
+                String returnValue = null;
+                do {
+                    try {
+                        returnValue = Utils.sendPostData(App.settings.getFileURL("getfilesizes.php"),
+                                base64Files, "files");
                     }
-                }
-            } while (returnValue == null);
-            if (returnValue != null) {
-                try {
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder = factory.newDocumentBuilder();
-                    InputSource is = new InputSource(new StringReader(returnValue));
-                    Document document = builder.parse(is);
-                    document.getDocumentElement().normalize();
-                    NodeList nodeList = document.getElementsByTagName("file");
-                    for (int i = 0; i < nodeList.getLength(); i++) {
-                        Node node = nodeList.item(i);
-                        if (node.getNodeType() == Node.ELEMENT_NODE) {
-                            Element element = (Element) node;
-                            String url = element.getAttribute("url");
-                            int size = Integer.parseInt(element.getAttribute("size"));
-                            fileSizes.put(url, size);
+                    catch (IOException e) {
+                        App.settings.logStackTrace(e);
+                    }
+                    if (returnValue == null) {
+                        if (!App.settings.getNextServer()) {
+                            App.settings
+                                    .log("Couldn't get filesizes of files from all DwD servers. Continuing regardless!",
+                                    LogMessageType.warning, false);
                         }
                     }
-                } catch (SAXException e) {
-                    App.settings.logStackTrace(e);
-                } catch (ParserConfigurationException e) {
-                    App.settings.logStackTrace(e);
-                } catch (IOException e) {
-                    App.settings.logStackTrace(e);
+                } while (returnValue == null);
+                if (returnValue != null) {
+                    try {
+                        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                        DocumentBuilder builder = factory.newDocumentBuilder();
+                        InputSource is = new InputSource(new StringReader(returnValue));
+                        Document document = builder.parse(is);
+                        document.getDocumentElement().normalize();
+                        NodeList nodeList = document.getElementsByTagName("file");
+                        for (int i = 0; i < nodeList.getLength(); i++) {
+                            Node node = nodeList.item(i);
+                            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                                Element element = (Element) node;
+                                String url = element.getAttribute("url");
+                                int size = Integer.parseInt(element.getAttribute("size"));
+                                fileSizes.put(url, size);
+                            }
+                        }
+                    } catch (SAXException e) {
+                        App.settings.logStackTrace(e);
+                    } catch (ParserConfigurationException e) {
+                        App.settings.logStackTrace(e);
+                    } catch (IOException e) {
+                        App.settings.logStackTrace(e);
+                    }
                 }
+            } catch (Exception e) {
+                App.settings.logStackTrace(e);
             }
         }
 
@@ -569,7 +577,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
         fireSubProgress(0); // Show the subprogress bar
         for (final Downloadable download : downloads) {
             executor.execute(new Runnable() {
-
                 @Override
                 public void run() {
                     if (download.needToDownload()) {
@@ -598,7 +605,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
         for (final Downloadable download : downloads) {
             executor.execute(new Runnable() {
-
                 @Override
                 public void run() {
                     if (download.needToDownload()) {
@@ -617,7 +623,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
         for (final Downloadable download : downloads) {
             executor.execute(new Runnable() {
-
                 @Override
                 public void run() {
                     if (download.needToDownload()) {
@@ -645,7 +650,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
         for (final Downloadable download : downloads) {
             executor.execute(new Runnable() {
-
                 @Override
                 public void run() {
                     if (download.needToDownload()) {
@@ -664,7 +668,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
         for (final Downloadable download : downloads) {
             executor.execute(new Runnable() {
-
                 @Override
                 public void run() {
                     if (download.needToDownload()) {
@@ -717,7 +720,7 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
     private ArrayList<Downloadable> getResources() {
         ArrayList<Downloadable> downloads = new ArrayList<Downloadable>(); // All the
-                                                                           // files
+        // files
 
         // Read in the resources needed
 
@@ -928,10 +931,10 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
                         }
                         serverLibraries.add(new File(new File(getLibrariesDirectory(), element
                                 .getAttribute("server").substring(0,
-                                        element.getAttribute("server").lastIndexOf('/'))), element
+                                element.getAttribute("server").lastIndexOf('/'))), element
                                 .getAttribute("server").substring(
-                                        element.getAttribute("server").lastIndexOf('/'),
-                                        element.getAttribute("server").length())));
+                                element.getAttribute("server").lastIndexOf('/'),
+                                element.getAttribute("server").length())));
                     }
                     downloadTo = new File(App.settings.getLibrariesDir(), file);
                     if (download == Download.server) {
@@ -957,7 +960,7 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
             try {
                 Downloadable versionJson = new Downloadable(
                         "http://s3.amazonaws.com/Minecraft.Download/versions/"
-                                + this.minecraftVersion + "/" + this.minecraftVersion + ".json",
+                        + this.minecraftVersion + "/" + this.minecraftVersion + ".json",
                         false);
                 Object obj = parser.parse(versionJson.getContents());
                 JSONObject jsonObject = (JSONObject) obj;
@@ -1055,7 +1058,7 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
                                 this.librariesNeeded += "," + filename;
                             }
                         }
-                        String url = "http://s3.amazonaws.com/Minecraft.Download/libraries/" + dir
+                        String url = "https://libraries.minecraft.net/" + dir
                                 + "/" + filename;
                         File file = new File(App.settings.getLibrariesDir(), filename);
                         libraries.add(new Downloadable(url, file, null, this, false));
@@ -1070,9 +1073,9 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
         if (isServer) {
             libraries.add(new Downloadable(
                     "http://s3.amazonaws.com/Minecraft.Download/versions/" + this.minecraftVersion
-                            + "/minecraft_server." + this.minecraftVersion + ".jar", new File(
-                            App.settings.getJarsDir(), "minecraft_server." + this.minecraftVersion
-                                    + ".jar"), null, this, false));
+                    + "/minecraft_server." + this.minecraftVersion + ".jar", new File(
+                    App.settings.getJarsDir(), "minecraft_server." + this.minecraftVersion
+                    + ".jar"), null, this, false));
         } else {
             libraries.add(new Downloadable("http://s3.amazonaws.com/Minecraft.Download/versions/"
                     + this.minecraftVersion + "/" + this.minecraftVersion + ".jar", new File(
@@ -1181,9 +1184,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
 
     public boolean hasForge() {
         for (Mod mod : selectedMods) {
-            if (!mod.installOnServer() && isServer) {
-                continue;
-            }
             if (mod.getType() == Type.forge) {
                 return true;
             }
@@ -1249,9 +1249,9 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
     }
 
     protected Boolean doInBackground() throws Exception {
-        if(this.isReinstall){
+        if (this.isReinstall) {
             System.out.println(this.pack.getUpdateMessage(this.version));
-        }else{
+        } else {
             System.out.println(this.pack.getInstallMessage(this.version));
         }
         this.allMods = sortMods(this.pack.getMods(this.version, isServer));
@@ -1497,6 +1497,6 @@ public class InstanceInstaller extends SwingWorker<Boolean, Void> {
         }
         fireSubProgress((int) progress,
                 String.format("%.2f", ((float) this.downloadedBytes / 1024 / 1024)) + " MB / "
-                        + String.format("%.2f", ((float) this.totalBytes / 1024 / 1024)) + " MB");
+                + String.format("%.2f", ((float) this.totalBytes / 1024 / 1024)) + " MB");
     }
 }

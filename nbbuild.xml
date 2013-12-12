@@ -15,6 +15,10 @@ REMEMBER - Change the atlauncher.version property below
 	<property name="buildsrc.dir" value="${build.dir}/src" />
 	<property name="bin.dir" value="${build.dir}/compiled" />
 	<property name="atlauncher.version" value="1.0.0" />
+    
+    <classpath>
+      <pathelement path="{$src.dir}/lib"/>
+    </classpath>
 
 	<mkdir dir="${build.dir}" />
 	<mkdir dir="${release.dir}" />
@@ -41,7 +45,7 @@ REMEMBER - Change the atlauncher.version property below
 		<fileset dir="${buildsrc.dir}/resources" includes="**" />
 	</copy>
 
-	<jar destfile="${bin.dir}/ATLauncher.jar" filesetmanifest="mergewithoutmain">
+	<jar destfile="${bin.dir}/TruLauncher.jar" filesetmanifest="mergewithoutmain">
 		<manifest>
 			<attribute name="Main-Class" value="com.atlauncher.App" />
 			<attribute name="Class-Path" value="." />
@@ -49,8 +53,8 @@ REMEMBER - Change the atlauncher.version property below
 		<fileset dir="${bin.dir}" />
 	</jar>
 	
-	<chmod file="${bin.dir}/ATLauncher.jar" perm="ugo+rwx"/>
-	<copy file="${bin.dir}/ATLauncher.jar" tofile="${release.dir}/ATLauncher.jar"/>
+	<chmod file="${bin.dir}/TruLauncher.jar" perm="ugo+rwx"/>
+	<copy file="${bin.dir}/TruLauncher.jar" tofile="${release.dir}/TruLauncher.jar"/>
 
 	<exec os="Windows NT" executable="cmd">
 		<arg value="/c" />
@@ -78,20 +82,24 @@ REMEMBER - Change the atlauncher.version property below
 		<arg value="launch4j.xml" />
 	</exec>
 	
-	<mkdir dir="${bin.dir}/ATLauncher.app" />
-	<copy todir="${bin.dir}/ATLauncher.app">
+	<mkdir dir="${bin.dir}/TruLauncher.app" />
+	<copy todir="${bin.dir}/TruLauncher.app">
 		<fileset dir="${macapp.dir}" includes="**" />
 	</copy>
-	<copy file="${bin.dir}/ATLauncher.jar" tofile="${bin.dir}/ATLauncher.app/Contents/Resources/Java/ATLauncher.jar"/>
-	<copy file="${src.dir}/resources/Icon.icns" tofile="${bin.dir}/ATLauncher.app/Contents/Resources/Icon.icns"/>
-	<replace file="${bin.dir}/ATLauncher.app/Contents/Info.plist" token="%VERSION%" value="${atlauncher.version}" />
+	<copy file="${bin.dir}/TruLauncher.jar" tofile="${bin.dir}/TruLauncher.app/Contents/Resources/Java/TruLauncher.jar"/>
+	<copy file="${src.dir}/resources/Icon.icns" tofile="${bin.dir}/TruLauncher.app/Contents/Resources/Icon.icns"/>
+	<replace file="${bin.dir}/TruLauncher.app/Contents/Info.plist" token="%VERSION%" value="${atlauncher.version}" />
 	
-	<zip destfile="${release.dir}/ATLauncher.zip">
-	    <zipfileset dir="${bin.dir}/" includes="ATLauncher.app/**" excludes="ATLauncher.app/Contents/MacOS/JavaApplicationStub" />
-	    <zipfileset dir="${bin.dir}/" includes="ATLauncher.app/Contents/MacOS/JavaApplicationStub" filemode="755" />
+	<zip destfile="${release.dir}/TruLauncher.zip">
+	    <zipfileset dir="${bin.dir}/" includes="TruLauncher.app/**" excludes="TruLauncher.app/Contents/MacOS/JavaApplicationStub" />
+	    <zipfileset dir="${bin.dir}/" includes="TruLauncher.app/Contents/MacOS/JavaApplicationStub" filemode="755" />
 	</zip>
 	
-	<delete dir="${bin.dir}/ATLauncher.app"/>
+	<delete dir="${bin.dir}/TruLauncher.app"/>
 	
 	<delete dir="${build.dir}" />
+    
+    <target name="clean" description="clean up" >
+        <delete dir="${build.dir}"/>
+    </target>
 </project>

@@ -1,13 +1,13 @@
 /**
  * Copyright 2013 by ATLauncher and Contributors
  *
- * This work is licensed under the Creative Commons Attribution-ShareAlike 3.0 Unported License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/3.0/.
+ * This work is licensed under the Creative Commons Attribution-ShareAlike 3.0
+ * Unported License. To view a copy of this license, visit
+ * http://creativecommons.org/licenses/by-sa/3.0/.
  */
 package com.atlauncher.gui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 
@@ -30,21 +30,62 @@ import org.xml.sax.SAXException;
 
 import com.atlauncher.App;
 import com.atlauncher.utils.Utils;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.BorderFactory;
+import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
+import sun.font.TrueTypeFont;
 
 @SuppressWarnings("serial")
 public class NewsPanel extends JPanel {
 
     private JEditorPane newsArea;
 
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(600, 400);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(600, 400);
+    }
+
     public NewsPanel() {
-        setLayout(new BorderLayout());
+        setBorder(new EmptyBorder(0,0,10,10));
+        setLayout(new BorderLayout(0,0));
+        setBackground(new Color(226, 0, 0));
         loadContent();
+        setSize(500, 400);
     }
 
     private void loadContent() {
-        newsArea = new JEditorPane("text/html", "");
+        JLabel title = new JLabel();
+        title.setText(" News");
+        title.setBorder(new EmptyBorder(10,10,10,10));
+
+        try {
+            Font customFont = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("/resources/weblysleekuil.ttf"));
+            customFont = customFont.deriveFont(24f);
+            title.setFont(customFont);
+        } catch (FontFormatException | IOException ex) {
+            Logger.getLogger(NewsPanel.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        add(title, BorderLayout.NORTH);
+
+        newsArea = new JEditorPane();
         newsArea.setEditable(false);
-        newsArea.setSelectionColor(Color.GRAY);
+        newsArea.setBorder(BorderFactory.createEmptyBorder());
+        newsArea.setSelectionColor(new Color(255, 255, 255, 150));
+        newsArea.setOpaque(false);
+        newsArea.setBackground(new Color(0, 0, 0, 0));
 
         HTMLEditorKit kit = new HTMLEditorKit();
         StyleSheet styleSheet = kit.getStyleSheet();
@@ -60,8 +101,17 @@ public class NewsPanel extends JPanel {
                 }
             }
         });
-        add(new JScrollPane(newsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER), BorderLayout.CENTER);
+        JScrollPane scrollPane = new JScrollPane(newsArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        add(scrollPane, BorderLayout.CENTER);
+
+        scrollPane.getViewport().setBackground(new Color(0, 0, 0, 0));
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setViewportBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setOpaque(false);
+        scrollPane.setBackground(new Color(0, 0, 0, 0));
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+
         String news = "<html>";
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -84,7 +134,7 @@ public class NewsPanel extends JPanel {
                                 + element.getAttribute("comments")
                                 + " "
                                 + (Integer.parseInt(element.getAttribute("comments")) == 1 ? "comment"
-                                        : "comments") + ")</p>" + "<p id=\"newsBody\">"
+                                : "comments") + ")</p>" + "<p id=\"newsBody\">"
                                 + element.getTextContent() + "</p><br/>";
                     } else {
                         news += "<p id=\"newsHeader\">"
@@ -97,7 +147,7 @@ public class NewsPanel extends JPanel {
                                 + element.getAttribute("comments")
                                 + " "
                                 + (Integer.parseInt(element.getAttribute("comments")) == 1 ? "comment"
-                                        : "comments") + ")</p>" + "<p id=\"newsBody\">"
+                                : "comments") + ")</p>" + "<p id=\"newsBody\">"
                                 + element.getTextContent() + "</p><br/><hr/>";
                     }
                 }
@@ -113,11 +163,20 @@ public class NewsPanel extends JPanel {
         newsArea.setCaretPosition(0);
     }
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+    }
+
+    @Override
+    public boolean isOptimizedDrawingEnabled() {
+        return false;
+    }
+
     public void reload() {
         removeAll();
         loadContent();
         validate();
         repaint();
     }
-
 }

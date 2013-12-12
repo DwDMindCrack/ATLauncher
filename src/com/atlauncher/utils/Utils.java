@@ -12,8 +12,6 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -34,7 +32,6 @@ import java.lang.management.OperatingSystemMXBean;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
@@ -46,7 +43,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Deque;
 import java.util.Enumeration;
 import java.util.LinkedList;
-import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
@@ -293,7 +289,7 @@ public class Utils {
             urlParameters += "language=" + URLEncoder.encode("text", "ISO-8859-1") + "&";
             urlParameters += "private=" + URLEncoder.encode("1", "ISO-8859-1") + "&";
             urlParameters += "text=" + URLEncoder.encode(log, "ISO-8859-1");
-            URL url = new URL("%PASTEAPIURL%");
+            URL url = new URL("http://paste.dwdg.net/api/create");
             URLConnection conn = url.openConnection();
             conn.setDoOutput(true);
             OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
@@ -329,7 +325,7 @@ public class Utils {
             while ((nread = fis.read(dataBytes)) != -1) {
                 md.update(dataBytes, 0, nread);
             }
-            ;
+            
             byte[] mdbytes = md.digest();
 
             sb = new StringBuffer();

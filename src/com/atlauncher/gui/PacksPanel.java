@@ -27,6 +27,7 @@ import javax.swing.SwingUtilities;
 import com.atlauncher.App;
 import com.atlauncher.data.Pack;
 import com.atlauncher.data.PrivatePack;
+import java.awt.Dimension;
 
 public class PacksPanel extends JPanel {
 
@@ -47,6 +48,16 @@ public class PacksPanel extends JPanel {
     private JPanel panel;
     private JScrollPane scrollPane;
     private int currentPosition = 0;
+
+    @Override
+    public Dimension getMinimumSize() {
+        return new Dimension(600, 400);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(600, 400);
+    }
 
     public PacksPanel() {
         setLayout(new BorderLayout());
